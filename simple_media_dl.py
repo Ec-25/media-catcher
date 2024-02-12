@@ -8,8 +8,7 @@ Classes:
     MediaDownloader: A class for downloading media from given URLs using yt-dlp.
 
 Attributes:
-    PREFERENCES (dict): A dictionary containing download settings such as format, outtmpl,
-    and postprocessors.
+    SUGGESTIONS (dict): A dictionary containing suggestions for download settings.
 """
 
 from os import path
@@ -50,7 +49,10 @@ class MediaDownloader:
         return YoutubeDL(self.settings)
 
     def set_media_settings(
-        self, new_format: str, new_outtmpl: str, new_postprocessors: list
+        self,
+        new_format: str | None = None,
+        new_outtmpl: str | None = None,
+        new_postprocessors: list | None = None,
     ) -> None:
         """
         Sets the download settings.
@@ -60,9 +62,14 @@ class MediaDownloader:
             new_outtmpl (str): The output template for downloaded media files.
             new_postprocessors (list): A list of postprocessors to apply after downloading.
         """
-        self.settings["format"] = new_format
-        self.settings["outtmpl"] = new_outtmpl
-        self.settings["postprocessors"] = new_postprocessors
+        if new_format:
+            self.settings["format"] = new_format
+
+        if new_outtmpl:
+            self.settings["outtmpl"] = new_outtmpl
+
+        if new_postprocessors:
+            self.settings["postprocessors"] = new_postprocessors
 
     def set_urls(self, new_url_list: list) -> None:
         """
@@ -80,11 +87,11 @@ class MediaDownloader:
         self._get_media_dl().download(self.urls)
 
 
-PREFERENCES = {
+SUGGESTIONS = {
     "formats": (
         "best",
         "worst",
-        "bestvideo[height=quality_video]+bestaudio[abr=quality_audio}]/best",
+        "bestvideo[height=quality_video]+bestaudio[abr=quality_audio]/best",
     ),
     "qualities": {
         "video": [144, 240, 360, 480, 720, 1080, 1440, 2160],
