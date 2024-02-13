@@ -13,6 +13,7 @@ Attributes:
 
 from os import path
 from yt_dlp import YoutubeDL
+from yt_dlp.utils import YoutubeDLError
 
 
 class MediaDownloader:
@@ -85,6 +86,27 @@ class MediaDownloader:
         Downloads media from the specified URLs using the current settings.
         """
         self._get_media_dl().download(self.urls)
+
+    def get_info(self, url: str) -> dict:
+        """
+        Returns information about the media being downloaded.
+        """
+        ydl_opts = {
+            'quiet': True,
+            'simulate': True,  # No descarga el video, solo simula la descarga y muestra información
+            'dump_single_json': True,  # Dump output to single json format
+        }
+
+        with YoutubeDL(ydl_opts) as ydl:
+            try:
+                info = ydl.extract_info(url, download=False)
+                return {
+                'title': info.get('title', 'N/A'),
+                'duration': info.get('duration', 'N/A'),
+                'thumbnail': info.get('thumbnail', 'N/A')
+                }
+            except YoutubeDLError as e:
+                print(f"Error al obtener información: {str(e)}")
 
 
 SUGGESTIONS = {
